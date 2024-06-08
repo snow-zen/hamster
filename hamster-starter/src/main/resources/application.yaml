@@ -1,0 +1,17 @@
+quarkus:
+  banner:
+    path: banner.txt
+  test:
+    continuous-testing: DISABLED
+  # 开发阶段关闭 dev-service 服务
+  devservices:
+    enabled: false
+  # mongodb 配置
+  mongodb:
+    connection-string: mongodb://pc.zxj:27017
+    database: hamster
+  # 日志配置
+  log:
+    category:
+      "org.mongodb.driver":
+        level: DEBUG
