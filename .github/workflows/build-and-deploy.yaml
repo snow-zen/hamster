@@ -1,0 +1,37 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'github-workflows'
+  pull_request:
+    branches:
+      - 'main'
+      - 'github-workflows'
+
+jobs:
+  # todo 检查 Job
+  # 测试 Job
+  test:
+    runs-on: ubuntu-22.04
+    environment: hamster-ci
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: maven
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Unit test
+        run: mvn -B clear test
+      - name: Integration test
+        run: echo "Do nothing"
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+  # todo 打包 Job
+  # todo 部署 Job
