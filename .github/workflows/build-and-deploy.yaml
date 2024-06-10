@@ -26,7 +26,7 @@ jobs:
           distribution: 'zulu'
           cache: maven
       - name: Unit test
-        run: mvn -B clear test
+        run: mvn -B clean test
       - name: Integration test
         run: echo "Do nothing"
       - name: Upload coverage reports to Codecov
