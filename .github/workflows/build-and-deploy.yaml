@@ -10,6 +10,9 @@ on:
       - 'main'
       - 'github-workflows'
 
+env:
+  DEBUG_MODE: ${{ env.ACTIONS_STEP_DEBUG }}
+
 jobs:
   # todo 检查 Job
   # 测试 Job
@@ -26,7 +29,7 @@ jobs:
           distribution: 'zulu'
           cache: maven
       - name: Unit test
-        run: mvn -B clean test
+        run: mvn -B clean test ${{ env.DEBUG_MODE == true && '-X' || '' }}
       - name: Integration test
         run: echo "Do nothing"
       - name: Upload coverage reports to Codecov
