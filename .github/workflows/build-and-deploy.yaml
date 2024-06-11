@@ -11,7 +11,7 @@ on:
       - 'github-workflows'
 
 env:
-  DEBUG_MODE: ${{ env.ACTIONS_STEP_DEBUG }}
+  DEBUG_MODE: ${{ vars.ACTIONS_STEP_DEBUG }}
 
 jobs:
   # todo 检查 Job
