@@ -39,9 +39,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B -DskipTests ${{ env.DEBUG_MODE == 'true' && '-X' || '' }} \
+        run: mvn -B ${{ env.DEBUG_MODE == 'true' && '-X' || '' }} \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=snow-zen_hamster
+          -Dsonar.projectKey=snow-zen_hamster \
+          -DskipTests
   # 测试 Job
   test:
     runs-on: ubuntu-22.04
