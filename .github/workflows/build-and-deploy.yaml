@@ -1,0 +1,66 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'github-workflows'
+  pull_request:
+    branches:
+      - 'main'
+      - 'github-workflows'
+
+env:
+  DEBUG_MODE: ${{ vars.ACTIONS_STEP_DEBUG }}
+
+jobs:
+  # 检查 Job
+  check:
+    runs-on: ubuntu-22.04
+    environment: hamster-ci
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: maven
+      - name: Check code style
+        run: mvn -B clean checkstyle:check ${{ env.DEBUG_MODE == 'true' && '-X' || '' }}
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B ${{ env.DEBUG_MODE == 'true' && '-X' || '' }} package -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=snow-zen_hamster
+  # 测试 Job
+  test:
+    runs-on: ubuntu-22.04
+    environment: hamster-ci
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: maven
+      - name: Unit test
+#        run: mvn -B clean test ${{ env.DEBUG_MODE == 'true' && '-X' || '' }}
+        run: echo "Do nothing"
+      - name: Integration test
+        run: echo "Do nothing"
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+  # todo 打包 Job
+  # todo 部署 Job
